@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<meta name="description" content="Codzienna nauka angielskiego na poziomie B1-B2: przydatne słowa, poprawne formy wypowiedzi i powtórki.">
+<title>Angielski B1-B2 - codzienna dawka</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Angielski">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">EN</span>
+      <span class="brand-text">
+        <strong>Angielski B1-B2</strong>
+        <small id="dateLabel">&nbsp;</small>
+      </span>
+    </div>
+    <button id="streakBtn" class="streak" type="button" title="Twoja seria dni z ukończoną lekcją">
+      <span aria-hidden="true">&#128293;</span><span id="streakCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="view" class="view" tabindex="-1">
+  <p class="loading">Ładowanie...</p>
+</main>
+
+<nav class="tabbar" id="tabbar" aria-label="Nawigacja główna">
+  <button type="button" data-tab="today" class="tab is-active">
+    <span class="tab-ico" aria-hidden="true">&#9728;</span><span>Dziś</span>
+  </button>
+  <button type="button" data-tab="review">
+    <span class="tab-ico" aria-hidden="true">&#8635;</span><span>Powtórki<em id="dueBadge" class="badge" hidden>0</em></span>
+  </button>
+  <button type="button" data-tab="phrases">
+    <span class="tab-ico" aria-hidden="true">&#128172;</span><span>Zwroty</span>
+  </button>
+  <button type="button" data-tab="mistakes">
+    <span class="tab-ico" aria-hidden="true">&#9888;</span><span>Błędy</span>
+  </button>
+  <button type="button" data-tab="progress">
+    <span class="tab-ico" aria-hidden="true">&#128200;</span><span>Postęp</span>
+  </button>
+</nav>
+
+<script src="js/data/words.js"></script>
+<script src="js/data/patterns.js"></script>
+<script src="js/data/mistakes.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
