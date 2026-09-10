@@ -633,8 +633,9 @@
         return '<option value="' + n + '"' + (state.wordsPerDay === n ? " selected" : "") + '>' + n + '</option>';
       }).join("") + '</select>' +
       '<p class="small muted" style="margin:0">Zmiana zadziała od następnego dnia.</p>' +
-      '<div class="row"><button class="btn slim" type="button" id="expBtn">Kopia zapasowa (JSON)</button>' +
+      '<div class="row"><button class="btn slim" type="button" id="expBtn">Kopia zapasowa</button>' +
       '<button class="btn slim ghost" type="button" id="resetBtn">Wyczyść postęp</button></div>' +
+      '<div id="backupBox" class="stack" hidden></div>' +
       '<p class="small muted" style="margin:0">Postęp zapisuje się tylko na tym urządzeniu, w tej przeglądarce.</p>' +
       '</div>';
 
@@ -674,19 +675,48 @@
         '</span><span class="l-pl">' + esc(w.pl) + '</span></li>';
     }).join("");
   }
+  /* Kopia zapasowa jako tekst, a nie plik: pobieranie plików bywa zablokowane
+     (podgląd w Artifactach, część przeglądarek mobilnych), a tekst da się skopiować wszędzie. */
   function exportProgress() {
-    var data = JSON.stringify(state, null, 2);
-    try {
-      var blob = new Blob([data], { type: "application/json" });
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "postep-angielski-" + today() + ".json";
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
-    } catch (e) {
-      if (navigator.clipboard) navigator.clipboard.writeText(data);
-      alert("Kopia postępu została skopiowana do schowka.");
-    }
+    var box = document.getElementById("backupBox");
+    if (!box) return;
+    box.hidden = false;
+    box.innerHTML =
+      '<label class="small" style="font-weight:600" for="backupText">Twój postęp jako tekst - zapisz go w notatkach lub w pliku</label>' +
+      '<textarea id="backupText" style="min-height:110px;font-size:.78rem">' + esc(JSON.stringify(state)) + '</textarea>' +
+      '<div class="row"><button class="btn slim" type="button" id="copyBackup">Kopiuj</button>' +
+      '<button class="btn slim ghost" type="button" id="importBackup">Przywróć z tego tekstu</button></div>' +
+      '<p class="small muted" id="backupMsg" style="margin:0">Aby przenieść postęp na inne urządzenie, wklej tu zapisany tekst i kliknij Przywróć.</p>';
+
+    var msg = document.getElementById("backupMsg");
+    document.getElementById("copyBackup").addEventListener("click", function () {
+      var ta = document.getElementById("backupText");
+      ta.select();
+      var done = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(function () {
+          msg.textContent = "Skopiowane do schowka.";
+        }).catch(function () {
+          msg.textContent = "Nie udało się skopiować automatycznie - zaznacz tekst i skopiuj ręcznie.";
+        });
+        done = true;
+      }
+      if (!done) msg.textContent = "Zaznacz tekst i skopiuj ręcznie.";
+    });
+    document.getElementById("importBackup").addEventListener("click", function () {
+      try {
+        var incoming = JSON.parse(document.getElementById("backupText").value);
+        if (!incoming || typeof incoming !== "object" || !incoming.srs || !incoming.order) throw new Error("zły format");
+        var f = freshState();
+        for (var k in f) if (!(k in incoming)) incoming[k] = f[k];
+        state = incoming;
+        save();
+        ensureDay();
+        go("progress");
+      } catch (e) {
+        msg.textContent = "To nie wygląda na kopię postępu - sprawdź, czy wklejony tekst jest kompletny.";
+      }
+    });
   }
 
   /* ------------------------- wspólne zdarzenia ------------------------- */

@@ -28,7 +28,8 @@ Pozostałe zakładki:
   przed rozmową albo przed napisaniem maila.
 - **Błędy** - pełna lista typowych błędów Polaków plus ćwiczenie "wybierz poprawną wersję".
 - **Postęp** - seria dni, liczba poznanych słów, rozkład powtórek, wyszukiwarka Twoich słów,
-  liczba słów dziennie, kopia zapasowa postępu (JSON) i czyszczenie danych.
+  liczba słów dziennie, kopia zapasowa postępu (tekst do skopiowania, którym można też
+  przenieść postęp na inne urządzenie) i czyszczenie danych.
 
 Baza zawiera 200 słów i zwrotów, 39 wzorców wypowiedzi i 59 typowych błędów. Przy pięciu
 słowach dziennie to około 40 dni nauki bez powtarzania materiału.
@@ -50,6 +51,19 @@ Dodanie do ekranu głównego:
 - **iPhone (Safari)**: przycisk *Udostępnij* → *Do ekranu początkowego*.
 
 Po dodaniu strona otwiera się na pełnym ekranie i działa offline.
+
+## Jeden plik do wysłania
+
+Jeśli wygodniej mieć całą stronę w jednym pliku (mail, dysk telefonu, hosting
+przyjmujący pojedynczy plik):
+
+```bash
+node tools/build-single-file.js            # tworzy angielski-b1-b2.html w katalogu projektu
+node tools/build-single-file.js ~/plik.html
+```
+
+Skrypt wkleja styl i wszystkie skrypty do jednego HTML-a (bez trybu offline, bo
+service worker nie ma tam czego cache'ować). Plik działa też otwarty bezpośrednio z dysku.
 
 ## Uruchomienie lokalnie
 
@@ -87,6 +101,7 @@ pobrał świeżą paczkę zamiast wersji z pamięci.
 ```
 index.html                 szkielet strony i dolna nawigacja
 css/style.css              styl (tryb jasny i ciemny, układ pod telefon)
+tools/build-single-file.js skrypt scalający stronę w jeden plik HTML
 js/app.js                  logika: lekcja dnia, quiz, powtórki, postęp
 js/data/words.js           200 słów i zwrotów B1-B2
 js/data/patterns.js        39 wzorców poprawnej wypowiedzi
@@ -99,5 +114,7 @@ icons/                     ikony aplikacji
 ## Prywatność
 
 Nie ma serwera, kont ani analityki. Postęp (seria, powtórki, Twoje odpowiedzi na zadania)
-jest zapisany wyłącznie w `localStorage` tej jednej przeglądarki. Wyczyszczenie danych
-strony usuwa postęp - warto wcześniej zrobić kopię zapasową z zakładki *Postęp*.
+jest zapisany wyłącznie w `localStorage` tej jednej przeglądarki - każdy adres (GitHub Pages,
+plik z dysku, jeden plik HTML) ma własny, osobny postęp. Wyczyszczenie danych strony usuwa
+postęp, dlatego w zakładce *Postęp* jest kopia zapasowa: kopiujesz tekst, a potem wklejasz go
+na innym urządzeniu i klikasz *Przywróć*.
